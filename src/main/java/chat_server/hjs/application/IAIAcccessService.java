@@ -7,5 +7,5 @@ package chat_server.hjs.application;
  * @Version: 1.0
  * @description:
  */
-public class IAIAcccessService {
+public interface IAIAcccessService {
 }

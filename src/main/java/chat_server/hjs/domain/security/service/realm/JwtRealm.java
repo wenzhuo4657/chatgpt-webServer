@@ -19,29 +19,28 @@ import java.util.Objects;
  * @description: 自定义shiro验证服务，
  */
 public class JwtRealm extends AuthorizingRealm {
-    private Logger log= LoggerFactory.getLogger(JwtRealm.class);
     private static JwtUtil jwtUtil = JwtUtil.DefaultJwtUtil();
+    private Logger log = LoggerFactory.getLogger(JwtRealm.class);
+
     @Override
     public boolean supports(AuthenticationToken token) {
         return token instanceof JwtToken;
     }
+
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         return null;
     }
 
 
-
-
-
-//    token验证服务
+    //    token验证服务
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-        String jwt=(String)token.getPrincipal();
-        if (Objects.isNull(jwt)){
+        String jwt = (String) token.getPrincipal();
+        if (Objects.isNull(jwt)) {
             throw new NullPointerException("jwtToken 不允许为空");
         }
-        if(!jwtUtil.isVerify(jwt)){
+        if (!jwtUtil.isVerify(jwt)) {
             throw new UnknownAccountException();
         }
         String username = (String) jwtUtil.decode(jwt).get("username");
