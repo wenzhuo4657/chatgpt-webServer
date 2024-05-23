@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 @RestController
 public class Application {
-        private Logger log= LoggerFactory.getLogger(Application.class);
+    private Logger log= LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
