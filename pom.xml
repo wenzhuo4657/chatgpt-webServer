@@ -163,7 +163,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
 <!--                    指定项目的启动类-->
-                    <mainClass>chat_server/hjs/main</mainClass>
+                    <mainClass>chat_server.hjs.Application</mainClass>
 <!--                    打包方式-->
                     <layout>JAR</layout>
                 </configuration>

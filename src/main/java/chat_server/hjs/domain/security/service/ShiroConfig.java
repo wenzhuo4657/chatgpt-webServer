@@ -78,6 +78,7 @@ public class ShiroConfig {
         shiroFilter.setFilters(filterMap);
 
         // 拦截器，指定方法走哪个拦截器 【login->anon】【logout->logout】【verify->jwt】
+//        注意这里是为接口单独设置过滤器，如果没有则不进行过滤
         Map<String, String> filterRuleMap = new LinkedHashMap<>();
         filterRuleMap.put("/login", "anon");
         filterRuleMap.put("/logout", "logout");

@@ -33,6 +33,7 @@ public class Application {
     }
     @RequestMapping("/success")
     public String success(){
+        log.info("fjasdfjas");
         return "test success by xfg";
     }
 

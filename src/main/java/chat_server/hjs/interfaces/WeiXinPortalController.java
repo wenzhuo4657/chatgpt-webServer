@@ -129,7 +129,10 @@ public class WeiXinPortalController {
      *
      *
      * 3，bug:
-     * 600byte字节限制，此处未做特殊处理
+     * （1）600byte字节限制，此处未做特殊处理
+     *
+     *
+     * 4，这里使用sleep休眠来等待请求完成，并没有阻塞线程，也就是说，当阻塞停止时，对应请求顺序执行，返回默认回复字段。
      */
 
     @PostMapping(produces = "application/xml; charset=UTF-8")
@@ -143,12 +146,11 @@ public class WeiXinPortalController {
                        @RequestParam(name = "msg_signature", required = false) String msgSignature) throws InterruptedException {
         logger.info("接收微信公众号信息请求{}开始 {}", openid, requestBody);
         MessageTextEntity message = XmlUtil.xmlToBean(requestBody, MessageTextEntity.class);
-        logger.info("请求次数{}", Objects.isNull(openAiRetryCountMap.get(message.getContent().trim())) ? 1 : openAiRetryCountMap.get(message.getContent().trim()));
 
 
         String content = message.getContent().trim();//订阅者消息
         Long endTime= openAiENDTimeMap.get(content);//消息处理的起始时间
-        String Data = openAiDataMap.get(content);//消息的处理结果，
+        String Data = openAiDataMap.get(content);//从缓存中获取消息的处理结果，
         Integer RetryCount = openAiRetryCountMap.get(content);//重试次数
 
 
@@ -163,27 +165,27 @@ public class WeiXinPortalController {
             String data = WeiXinfiled.DefaultRelyText;//默认处理中回复文本
             Integer retryCount = openAiRetryCountMap.get(message.getContent().trim());
 
-            //处于微信服务器端超时重试次数内，可以休眠等待处理，每次五秒等待时间，此处为避免网络通信所导致的延迟，从第一次起，可以等待15秒响应结果，
+
+
             if (Objects.isNull(RetryCount)) {//处于第一次请求，未重试
-                logger.info("消息处理{}", message.getContent().trim());
+                logger.info("消息处理:{}", message.getContent().trim());
                 openAiENDTimeMap.put(content, System.currentTimeMillis()+WeiXinfiled.RetryTime);
                 if (openAiDataMap.get(content) == null) {
                     doChatGPTTask(content);
                 }
                 openAiRetryCountMap.put(content,1);
-                TimeUnit.SECONDS.sleep(5);
-
-            } else if (retryCount<3) {
-                Long sleepTime = (endTime - System.currentTimeMillis())>5?5:(endTime - System.currentTimeMillis());
-                logger.info("消息请求：第{}次",retryCount);
+                TimeUnit.SECONDS.sleep(100000);
+            } else if (retryCount<2) {
+                Long sleepTime = (endTime - System.currentTimeMillis())>5*1000L?5*1000L:(endTime - System.currentTimeMillis()*1000L);
                 retryCount = retryCount + 1;
                 openAiRetryCountMap.put(content, retryCount);
                 TimeUnit.SECONDS.sleep(sleepTime);
                 if (openAiDataMap.get(message.getContent().trim()) != null && !"NULL".equals(openAiDataMap.get(message.getContent().trim()))) {
                     data = openAiDataMap.get(message.getContent().trim());
                 }
-            }
 
+            }
+            logger.info("消息请求：第{}次",openAiRetryCountMap.get(message.getContent().trim()));
             res.setContent(data);
             return XmlUtil.beanToXml(res);
         }
@@ -198,6 +200,9 @@ public class WeiXinPortalController {
 
     }
 
+      /**
+         *  des:  异步获取回复，并没有通过回调函数通知线程请求完成，而是将结果存入线程安全的map类，通过判断其是否有value来得知。
+         * */
     private void doChatGPTTask(String content) {
         openAiDataMap.put(content, "NULL");
         taskExecutor.execute( ()->{

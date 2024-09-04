@@ -3,9 +3,6 @@ package chat_server.hjs.domain.Validate.model;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 public class MessageTextEntity {
-
-    @XStreamAlias("MsgId")
-    private String msgId;
     @XStreamAlias("ToUserName")
     private String toUserName;
     @XStreamAlias("FromUserName")
@@ -14,8 +11,14 @@ public class MessageTextEntity {
     private String createTime;
     @XStreamAlias("MsgType")
     private String msgType;
+
     @XStreamAlias("Content")
     private String content;
+
+    @XStreamAlias("MsgId")
+    private String msgId;
+
+
     @XStreamAlias("Event")
     private String event;
     @XStreamAlias("EventKey")
