@@ -9,4 +9,7 @@ wx:
     token: theRegion
 
 
+chat:
+  config:
+    pers: b8b6
 

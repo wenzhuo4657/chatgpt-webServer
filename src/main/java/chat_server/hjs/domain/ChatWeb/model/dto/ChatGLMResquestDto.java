@@ -1,6 +1,7 @@
 package chat_server.hjs.domain.ChatWeb.model.dto;
 
 import ToOne.chatglm_sdk_master.model.ChatGLMModel;
+import chat_server.hjs.domain.ChatWeb.model.enity.MessageEntity;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package chat_server.hjs.domain.ChatWeb.model.dto;
+package chat_server.hjs.domain.ChatWeb.model.enity;
 
 public class MessageEntity {
 
@@ -47,4 +47,37 @@ public class MessageEntity {
         this.content = content;
         this.name = name;
     }
+    public static MessageEntityBuilder builder(){
+        return  new MessageEntityBuilder();
+    }
+
+    public static class MessageEntityBuilder{
+
+        private String role;
+        private String content;
+        private String name;
+
+        public MessageEntityBuilder setRole(String role) {
+            this.role = role;
+            return this;
+        }
+
+        public MessageEntityBuilder setContent(String content) {
+            this.content = content;
+            return this;
+        }
+
+        public MessageEntityBuilder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public MessageEntityBuilder() {
+        }
+
+        public MessageEntity build(){
+            return  new MessageEntity(this.role,this.content,this.name);
+        }
+    }
+
 }
