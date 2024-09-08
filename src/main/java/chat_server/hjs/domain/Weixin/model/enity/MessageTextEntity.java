@@ -1,4 +1,4 @@
-package chat_server.hjs.domain.Validate.model;
+package chat_server.hjs.domain.Weixin.model.enity;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 

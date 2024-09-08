@@ -1,11 +1,9 @@
-package chat_server.hjs.domain.Validate;
+package chat_server.hjs.domain.Weixin.service.Validate;
 
 import chat_server.hjs.Infrastructure.util.SignatureUtil;
 import chat_server.hjs.application.IWeiXinValidateService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import javax.websocket.server.ServerEndpoint;
 
 /**
  * @className: WeiXinValidateServiceImpl
@@ -14,7 +12,7 @@ import javax.websocket.server.ServerEndpoint;
  * @Version: 1.0
  * @description:
  */
-@Service(value = "WeiXinValidateService")
+@Service(value = "weiXinValidateService")
 public class WeiXinValidateServiceImpl  implements IWeiXinValidateService {
 
     @Value("${wx.config.token}")

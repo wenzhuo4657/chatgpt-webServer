@@ -9,9 +9,10 @@ import ToOne.chatglm_sdk_master.session.OpenAiSessionFactory;
 import ToOne.chatglm_sdk_master.session.defaults.DefaultOpenAiSessionFactory;
 import chat_server.hjs.Infrastructure.common.WeiXinfiled;
 import chat_server.hjs.Infrastructure.util.XmlUtil;
+import chat_server.hjs.application.IWeiXinBehaviorService;
 import chat_server.hjs.application.IWeiXinValidateService;
-import chat_server.hjs.domain.Validate.model.MessageTextEntity;
-import com.alibaba.fastjson.JSON;
+import chat_server.hjs.domain.Weixin.model.enity.MessageTextEntity;
+import chat_server.hjs.domain.Weixin.model.enity.UserBehaviorMessageEntity;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -23,10 +24,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -50,6 +51,8 @@ public class WeiXinPortalController {
 
     @Resource
     private IWeiXinValidateService weiXinValidateService;
+    @Resource
+    private IWeiXinBehaviorService weiXinBehaviorService;
 
     @Resource
     private ThreadPoolTaskExecutor taskExecutor;
@@ -119,6 +122,8 @@ public class WeiXinPortalController {
 
     /**
      * des:
+     *
+     * 流式回答
      * document:https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Receiving_standard_messages.html
      * 注意：
      * 1,微信服务器将POST消息的XML数据包到开发者填写的URL上，
@@ -154,7 +159,9 @@ public class WeiXinPortalController {
         Integer RetryCount = openAiRetryCountMap.get(content);//重试次数
 
 
-
+        if (content.equals("验证码")){
+              return   doCode(message,openid);
+        }
 
         MessageTextEntity res = new MessageTextEntity();
         res.setToUserName(openid);
@@ -200,7 +207,22 @@ public class WeiXinPortalController {
 
     }
 
-      /**
+    protected String doCode(MessageTextEntity message,String openid) {
+        UserBehaviorMessageEntity entity = UserBehaviorMessageEntity.builder()
+                .openId(openid)
+                .fromUserName(message.getFromUserName())
+                .msgType(message.getMsgType())
+                .content(StringUtils.isBlank(message.getContent()) ? null : message.getContent().trim())
+                .event(message.getEvent())
+                .createTime(new Date(Long.parseLong(message.getCreateTime()) * 1000L))
+                .build();
+        String result = weiXinBehaviorService.acceptUserBehavior(entity);
+        logger.info("接收微信公众号信息请求{}完成 {}", openid, result);
+        return result;
+
+    }
+
+    /**
          *  des:  异步获取回复，并没有通过回调函数通知线程请求完成，而是将结果存入线程安全的map类，通过判断其是否有value来得知。
          * */
     private void doChatGPTTask(String content) {
