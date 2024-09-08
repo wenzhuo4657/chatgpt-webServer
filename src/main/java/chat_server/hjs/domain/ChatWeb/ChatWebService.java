@@ -53,12 +53,11 @@ public class ChatWebService extends AbstractChatWebService {
                         return;
                     }
                     ResponseStream response = JSON.parseObject(data, ResponseStream.class);
-                    //  wenzhuo TODO 2024/9/8 : 无法正确解析data
                     List<ResponseStream.Choice> choices = response.getChoices();
                     for (ResponseStream.Choice chatChoice:choices){
-                        ResponseStream.delta message = chatChoice.getMessage();
+
+                        ResponseStream.Delta message = chatChoice.getDelta();
                         if (Objects.isNull(message)){
-//
                             continue;
                         }
 
