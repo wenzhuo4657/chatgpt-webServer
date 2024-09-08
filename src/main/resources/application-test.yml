@@ -1,4 +1,4 @@
 app:
   config:
-    cross-origin: *  # 跨域地址，这里由于是web请求会出现跨域，在此处设置允许跨域的地址
-    api-version: v1  # chat服务的版本，在接口层面上控制
+    cross-origin: '*'
+    api-version: v1

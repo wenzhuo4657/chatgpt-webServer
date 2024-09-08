@@ -47,55 +47,5 @@ public class ChatglmUtils {
         return session;
     }
 
-    public  static ResponseStream  SSE_stream(HttpServletResponse res){
-        try {
-            CountDownLatch countDownLatch = new CountDownLatch(1);
-            RequestSSE request = new RequestSSE();
-            request.setStream(true);
-            request.setMessages(new ArrayList<RequestSSE.Message>(){
 
-                private static final long serialVersionUID = -7988151926241837892L;
-                {
-                    add(RequestSSE.Message.builder()
-                            .role(Role.user.getCode())
-                            .content("jdk中存在哪些编译器")
-                            .build());
-                }
-
-            });
-
-            session.completionsStream(request, new EventSourceListener() {
-                @Override
-                public void onEvent(EventSource eventSource, @Nullable String id, @Nullable String type, String data) {
-                    if ("[DONE]".equals(data)) {
-                        log.info("[输出结束] Tokens {}", JSON.toJSONString(data));
-                        return;
-                    }
-
-                    ResponseStream response = JSON.parseObject(data, ResponseStream.class);
-                    log.info("测试结果：{}", JSON.toJSONString(response));
-                }
-
-                @Override
-                public void onClosed(EventSource eventSource) {
-                    log.info("对话完成");
-                    countDownLatch.countDown();
-                }
-
-                @Override
-                public void onFailure(EventSource eventSource, @Nullable Throwable t, @Nullable Response response) {
-                    log.error("对话失败", t);
-                    countDownLatch.countDown();
-                }
-            });
-
-            // 等待
-            countDownLatch.await();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
 }

@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * @description:
  */
 @Slf4j
-@RestController()
+@RestController
 @CrossOrigin("${app.config.cross-origin}")
 @RequestMapping("/api/${app.config.api-version}/")
 public class ChatwebController {
