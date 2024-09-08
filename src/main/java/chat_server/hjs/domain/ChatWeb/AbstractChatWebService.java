@@ -2,7 +2,7 @@ package chat_server.hjs.domain.ChatWeb;
 
 import ToOne.chatglm_sdk_master.session.OpenAiSession;
 import chat_server.hjs.Infrastructure.Exception.ChatGPTException;
-import chat_server.hjs.Infrastructure.common.Constants;
+import chat_server.hjs.domain.ChatWeb.valobj.Constants;
 import chat_server.hjs.Infrastructure.util.ChatglmUtils;
 import chat_server.hjs.application.IChatWebService;
 import chat_server.hjs.domain.ChatWeb.model.dto.ChatProcessAggregate;
@@ -10,7 +10,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
 /**

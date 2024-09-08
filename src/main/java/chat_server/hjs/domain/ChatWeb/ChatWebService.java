@@ -3,7 +3,7 @@ package chat_server.hjs.domain.ChatWeb;
 import ToOne.chatglm_sdk_master.model.RequestSSE;
 import ToOne.chatglm_sdk_master.model.ResponseStream;
 import chat_server.hjs.Infrastructure.Exception.ChatGPTException;
-import chat_server.hjs.Infrastructure.common.Constants;
+import chat_server.hjs.domain.ChatWeb.valobj.Constants;
 import chat_server.hjs.domain.ChatWeb.model.dto.ChatProcessAggregate;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
