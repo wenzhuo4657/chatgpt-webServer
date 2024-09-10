@@ -11,5 +11,5 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter
  * @description: chatweb自动回答api
  */
 public interface IChatWebService {
-    ResponseBodyEmitter completions(ChatProcessAggregate chatProcess);
+    ResponseBodyEmitter completions(ResponseBodyEmitter emitter, ChatProcessAggregate chatProcess);
 }
