@@ -19,5 +19,7 @@ public class AuthEnum {
 
     public  static  String openId_KEY="openId";
 
+    public static String SPLIT=",";
+
 
 }

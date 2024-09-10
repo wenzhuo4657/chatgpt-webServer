@@ -1,8 +1,8 @@
-package chat_server.hjs.domain.ChatWeb;
+package chat_server.hjs.domain.ChatWeb.service;
 
 import ToOne.chatglm_sdk_master.session.OpenAiSession;
 import chat_server.hjs.Infrastructure.Exception.ChatGPTException;
-import chat_server.hjs.domain.ChatWeb.valobj.Constants;
+import chat_server.hjs.domain.ChatWeb.model.valobj.Constants;
 import chat_server.hjs.Infrastructure.util.ChatglmUtils;
 import chat_server.hjs.application.IChatWebService;
 import chat_server.hjs.domain.ChatWeb.model.dto.ChatProcessAggregate;
@@ -22,8 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter
 
 public abstract class AbstractChatWebService implements IChatWebService {
 
-    @Value("${chat.config.pers}")
-    public String pers;
+
 
     protected static OpenAiSession openAiSession = ChatglmUtils.getSession();
 
@@ -31,9 +30,6 @@ public abstract class AbstractChatWebService implements IChatWebService {
 
     @Override
     public ResponseBodyEmitter completions(ChatProcessAggregate chatProcess) {
-        if (!pers.equals(chatProcess.getToken())) {
-            throw new ChatGPTException(Constants.ResponseCode.TOKEN_ERROR.getCode(), Constants.ResponseCode.TOKEN_ERROR.getInfo());
-        }
 
         ResponseBodyEmitter emitter = new ResponseBodyEmitter(3 * 60 * 1000L);
         emitter.onCompletion(()->{

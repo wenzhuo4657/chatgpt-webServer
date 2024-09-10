@@ -62,6 +62,14 @@ public abstract class AbstractAuthService implements IAuthService {
         return res;
     }
 
+
+
+    @Override
+    public String openId(String token) {
+        Claims claims = decode(token);
+        return claims.get(AuthEnum.openId_KEY).toString();
+    }
+
     protected abstract AuthStateEntity checkCode(String code);
 
 

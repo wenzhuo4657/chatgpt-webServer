@@ -1,6 +1,7 @@
 package chat_server.hjs.domain.ChatWeb.model.dto;
 
 import ToOne.chatglm_sdk_master.model.ChatGLMModel;
+import chat_server.hjs.Infrastructure.common.AuthEnum;
 import chat_server.hjs.domain.ChatWeb.model.enity.MessageEntity;
 
 import java.util.List;
@@ -13,29 +14,40 @@ import java.util.List;
  * @description:
  */
 public class ChatProcessAggregate {
-    /** 验证信息 */
-    private String token;
+    /** 用户id */
+    private String openid;
     /** 默认模型 */
     private String model = ChatGLMModel.GLM_4.getCode();
     /** 问题描述 */
     private List<MessageEntity> messages;
 
 
+    public boolean isWhiteList(String whiteListStr){
+        String[] split = whiteListStr.split(AuthEnum.SPLIT);
+        for (String id:split){
+            if (id.equals(openid)){
+                return true;
+            }
+        }
+        return  false;
+    }
+
+
     @Override
     public String toString() {
         return "ChatProcessAggregate{" +
-                "token='" + token + '\'' +
+                "openid='" + openid + '\'' +
                 ", model='" + model + '\'' +
                 ", messages=" + messages +
                 '}';
     }
 
-    public String getToken() {
-        return token;
+    public String getOpenid() {
+        return openid;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setOpenid(String openid) {
+        this.openid = openid;
     }
 
     public String getModel() {
@@ -57,8 +69,8 @@ public class ChatProcessAggregate {
     public ChatProcessAggregate() {
     }
 
-    public ChatProcessAggregate(String token, String model, List<MessageEntity> messages) {
-        this.token = token;
+    public ChatProcessAggregate(String openid, String model, List<MessageEntity> messages) {
+        this.openid = openid;
         this.model = model;
         this.messages = messages;
     }
@@ -72,15 +84,15 @@ public class ChatProcessAggregate {
         }
 
         /** 验证信息 */
-        private String token;
+        private String openid;
         /** 默认模型 */
         private String model = ChatGLMModel.GLM_4.getCode();
         /** 问题描述 */
         private List<MessageEntity> messages;
 
 
-        public ChatProcessAggregateBuilder setToken(String token) {
-            this.token = token;
+        public ChatProcessAggregateBuilder setOpenid(String openid) {
+            this.openid = openid;
             return this;
         }
 
@@ -95,7 +107,7 @@ public class ChatProcessAggregate {
         }
 
         public  ChatProcessAggregate build(){
-            return new ChatProcessAggregate(this.token,this.model,this.messages);
+            return new ChatProcessAggregate(this.openid,this.model,this.messages);
         }
 
     }

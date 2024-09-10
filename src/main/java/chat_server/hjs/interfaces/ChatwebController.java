@@ -4,8 +4,11 @@ import chat_server.hjs.application.IChatWebService;
 import chat_server.hjs.domain.ChatWeb.model.dto.ChatGLMResquestDto;
 import chat_server.hjs.domain.ChatWeb.model.dto.ChatProcessAggregate;
 import chat_server.hjs.domain.ChatWeb.model.enity.MessageEntity;
+import chat_server.hjs.domain.ChatWeb.model.valobj.Constants;
+import chat_server.hjs.domain.auth.AuthService;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
@@ -22,10 +25,18 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @CrossOrigin("${app.config.cross-origin}")
-@RequestMapping("/api/${app.config.api-version}/")
+@RequestMapping("/api/${app.config.api-version}/chatgpt")
 public class ChatwebController {
 
     private IChatWebService chatWebService;
+
+    private AuthService authService;
+
+    @Autowired
+    public ChatwebController(IChatWebService chatWebService, AuthService authService) {
+        this.chatWebService = chatWebService;
+        this.authService = authService;
+    }
 
     public ChatwebController(IChatWebService chatWebService) {
         this.chatWebService = chatWebService;
@@ -56,8 +67,21 @@ public class ChatwebController {
             response.setContentType("text/event-stream");
             response.setCharacterEncoding("UTF-8");
             response.setHeader("Cache-Control", "no-cache");
+
+//            校验token
+            ResponseBodyEmitter emitter = new ResponseBodyEmitter(3 * 60 * 1000L);
+            boolean res = authService.checkToken(token);
+            if (!res){
+                emitter.send(Constants.ResponseCode.TOKEN_ERROR.getCode());
+                emitter.complete();
+                return emitter;
+            }
+
+            String openId=authService.openId(token);
+            log.info("流式问答请求处理，openid:{} 请求模型:{}", openId, request.getModel());
+
             ChatProcessAggregate aggregate = ChatProcessAggregate.Builder().
-                    setToken(token)
+                    setOpenid(token)
                     .setModel(request.getModel())
                     .setMessages(
 

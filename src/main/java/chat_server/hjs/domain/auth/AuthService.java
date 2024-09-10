@@ -24,9 +24,7 @@ public class AuthService extends  AbstractAuthService{
 
     @Resource
     private Cache<String,String> codeCache;
-      /**
-         *  des: 注意caceh对象是通过springDI注入获取的,这意味着其同样的方式获取实例是一样的。
-         * */
+
 
 
 
