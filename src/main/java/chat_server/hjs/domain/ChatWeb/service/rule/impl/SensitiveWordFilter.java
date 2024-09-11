@@ -1,11 +1,16 @@
 package chat_server.hjs.domain.ChatWeb.service.rule.impl;
 
+import chat_server.hjs.domain.ChatWeb.annotation.LogicStrategy;
 import chat_server.hjs.domain.ChatWeb.model.dto.ChatProcessAggregate;
 import chat_server.hjs.domain.ChatWeb.model.enity.MessageEntity;
 import chat_server.hjs.domain.ChatWeb.model.enity.RuleLogicEntity;
+import chat_server.hjs.domain.ChatWeb.model.enity.UserAccountQuotaEntity;
 import chat_server.hjs.domain.ChatWeb.model.valobj.LogicCheckTypeVO;
 import chat_server.hjs.domain.ChatWeb.service.rule.ILogicFilter;
+import chat_server.hjs.domain.ChatWeb.service.rule.factory.DefaultLogicFactory;
 import com.github.houbb.sensitive.word.bs.SensitiveWordBs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +26,10 @@ import java.util.stream.Collectors;
  * 注意：白名单用户不受该约束
  */
 @Component
-public class SensitiveWordFilter implements ILogicFilter {
+@LogicStrategy(logicModel = DefaultLogicFactory.LogicModel.SENSITIVE_WORD)
+public class SensitiveWordFilter implements ILogicFilter<UserAccountQuotaEntity> {
+
+    private Logger log= LoggerFactory.getLogger(SensitiveWordFilter.class);
 
     @Resource
     private SensitiveWordBs words;
@@ -30,6 +38,10 @@ public class SensitiveWordFilter implements ILogicFilter {
     private  String  whitelist;
 
     @Override
+    public RuleLogicEntity<ChatProcessAggregate> filter(ChatProcessAggregate chatProcess, UserAccountQuotaEntity data) throws Exception {
+        return null;
+    }
+
     public RuleLogicEntity<ChatProcessAggregate> filter(ChatProcessAggregate chatProcess) throws Exception {
         if (chatProcess.isWhiteList(whitelist)){
             return  RuleLogicEntity.<ChatProcessAggregate>builder()

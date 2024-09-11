@@ -6,7 +6,8 @@ import chat_server.hjs.Infrastructure.util.ChatglmUtils;
 import chat_server.hjs.application.IChatWebService;
 import chat_server.hjs.domain.ChatWeb.model.dto.ChatProcessAggregate;
 import chat_server.hjs.domain.ChatWeb.model.enity.RuleLogicEntity;
-import chat_server.hjs.domain.ChatWeb.model.valobj.Constants;
+import chat_server.hjs.Infrastructure.model.valobj.Constants;
+import chat_server.hjs.domain.ChatWeb.model.enity.UserAccountQuotaEntity;
 import chat_server.hjs.domain.ChatWeb.model.valobj.LogicCheckTypeVO;
 import chat_server.hjs.domain.ChatWeb.service.rule.factory.DefaultLogicFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -64,6 +65,6 @@ public abstract class AbstractChatWebService implements IChatWebService {
 
     protected abstract void doMessageResponse(ChatProcessAggregate chatProcess, ResponseBodyEmitter responseBodyEmitter) throws JsonProcessingException;
 
-    protected abstract RuleLogicEntity<ChatProcessAggregate> doCheckLogic(ChatProcessAggregate chatProcess, String... logics) throws Exception;
+    protected abstract RuleLogicEntity<ChatProcessAggregate> doCheckLogic(ChatProcessAggregate chatProcess, UserAccountQuotaEntity userAccountQuotaEntity, String... logics) throws Exception;
 
 }

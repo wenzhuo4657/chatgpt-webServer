@@ -1,8 +1,8 @@
 package chat_server.hjs.interfaces;
 
-import chat_server.hjs.Infrastructure.model.Response;
+import chat_server.hjs.Infrastructure.model.enity.Response;
 import chat_server.hjs.application.IAuthService;
-import chat_server.hjs.domain.ChatWeb.model.valobj.Constants;
+import chat_server.hjs.Infrastructure.model.valobj.Constants;
 import chat_server.hjs.domain.auth.enity.AuthStateEntity;
 import chat_server.hjs.domain.auth.valobj.AuthTypeVO;
 import com.alibaba.fastjson.JSON;

@@ -1,9 +1,12 @@
 package chat_server.hjs.domain.ChatWeb.service.rule.impl;
 
+import chat_server.hjs.domain.ChatWeb.annotation.LogicStrategy;
 import chat_server.hjs.domain.ChatWeb.model.dto.ChatProcessAggregate;
 import chat_server.hjs.domain.ChatWeb.model.enity.RuleLogicEntity;
+import chat_server.hjs.domain.ChatWeb.model.enity.UserAccountQuotaEntity;
 import chat_server.hjs.domain.ChatWeb.model.valobj.LogicCheckTypeVO;
 import chat_server.hjs.domain.ChatWeb.service.rule.ILogicFilter;
+import chat_server.hjs.domain.ChatWeb.service.rule.factory.DefaultLogicFactory;
 import com.google.common.cache.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +24,8 @@ import javax.annotation.Resource;
  * 注意：白名单用户不受该约束
  */
 @Component
-public class AccessLimitFilter implements ILogicFilter {
+@LogicStrategy(logicModel = DefaultLogicFactory.LogicModel.ACCESS_LIMIT)
+public class AccessLimitFilter implements ILogicFilter<UserAccountQuotaEntity> {
 
     private Logger log= LoggerFactory.getLogger(AccessLimitFilter.class);
 
@@ -34,7 +38,7 @@ public class AccessLimitFilter implements ILogicFilter {
     @Resource
     private Cache<String, Integer> visitCache;
     @Override
-    public RuleLogicEntity<ChatProcessAggregate> filter(ChatProcessAggregate chatProcess) throws Exception {
+    public RuleLogicEntity<ChatProcessAggregate> filter(ChatProcessAggregate chatProcess,UserAccountQuotaEntity data) throws Exception {
 
         if (chatProcess.isWhiteList(whitelist)){
                 return  RuleLogicEntity.<ChatProcessAggregate>builder()

@@ -1,6 +1,7 @@
 package chat_server.hjs.domain.ChatWeb.service.rule.factory;
 
 import chat_server.hjs.domain.ChatWeb.annotation.LogicStrategy;
+import chat_server.hjs.domain.ChatWeb.model.enity.UserAccountQuotaEntity;
 import chat_server.hjs.domain.ChatWeb.service.rule.ILogicFilter;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class DefaultLogicFactory {
 
     private Map<String, ILogicFilter> logicFilterMap=new ConcurrentHashMap<>();
 
-    public DefaultLogicFactory(List<ILogicFilter> logicFilterMap) {
+    public DefaultLogicFactory(List<ILogicFilter<UserAccountQuotaEntity>> logicFilterMap) {
        logicFilterMap.stream()
                .forEach( logic->{
                    LogicStrategy strategy = AnnotationUtils.findAnnotation(logic.getClass(), LogicStrategy.class);
@@ -43,6 +44,9 @@ public class DefaultLogicFactory {
 
         ACCESS_LIMIT("ACCESS_LIMIT", "访问次数过滤"),
         SENSITIVE_WORD("SENSITIVE_WORD", "敏感词过滤"),
+        USER_QUOTA("USER_QUOTA", "用户额度过滤"),
+        MODEL_TYPE("MODEL_TYPE", "模型可用范围过滤"),
+        ACCOUNT_STATUS("ACCOUNT_STATUS", "账户状态过滤"),
         ;
 
         private String code;

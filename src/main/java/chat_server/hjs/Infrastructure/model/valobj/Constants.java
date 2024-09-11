@@ -1,4 +1,4 @@
-package chat_server.hjs.domain.ChatWeb.model.valobj;
+package chat_server.hjs.Infrastructure.model.valobj;
 
 /**
  * @className: Constants

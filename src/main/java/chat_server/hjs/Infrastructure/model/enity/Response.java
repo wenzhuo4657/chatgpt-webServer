@@ -1,4 +1,4 @@
-package chat_server.hjs.Infrastructure.model;
+package chat_server.hjs.Infrastructure.model.enity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

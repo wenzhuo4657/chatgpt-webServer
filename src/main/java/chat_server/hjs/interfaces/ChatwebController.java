@@ -4,7 +4,7 @@ import chat_server.hjs.application.IChatWebService;
 import chat_server.hjs.domain.ChatWeb.model.dto.ChatGLMResquestDto;
 import chat_server.hjs.domain.ChatWeb.model.dto.ChatProcessAggregate;
 import chat_server.hjs.domain.ChatWeb.model.enity.MessageEntity;
-import chat_server.hjs.domain.ChatWeb.model.valobj.Constants;
+import chat_server.hjs.Infrastructure.model.valobj.Constants;
 import chat_server.hjs.domain.auth.AuthService;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;

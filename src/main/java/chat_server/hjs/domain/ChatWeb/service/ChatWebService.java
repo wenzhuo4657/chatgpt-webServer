@@ -4,7 +4,7 @@ import ToOne.chatglm_sdk_master.model.RequestSSE;
 import ToOne.chatglm_sdk_master.model.ResponseStream;
 import chat_server.hjs.Infrastructure.Exception.ChatGPTException;
 import chat_server.hjs.domain.ChatWeb.model.enity.RuleLogicEntity;
-import chat_server.hjs.domain.ChatWeb.model.valobj.Constants;
+import chat_server.hjs.Infrastructure.model.valobj.Constants;
 import chat_server.hjs.domain.ChatWeb.model.dto.ChatProcessAggregate;
 import chat_server.hjs.domain.ChatWeb.model.valobj.LogicCheckTypeVO;
 import chat_server.hjs.domain.ChatWeb.service.rule.ILogicFilter;
@@ -47,6 +47,7 @@ public class ChatWebService extends AbstractChatWebService {
     protected RuleLogicEntity<ChatProcessAggregate> doCheckLogic(ChatProcessAggregate chatProcess, String... logics) throws Exception {
         Map<String, ILogicFilter> logicFilterMap = defaultLogicFactory.getLogicFilterMap();
         RuleLogicEntity<ChatProcessAggregate> entity=null;
+
         for (String code :logics){
              entity = logicFilterMap.get(code).filter(chatProcess);
              if (!LogicCheckTypeVO.SUCCESS.getCode().equals(entity.getType())){
