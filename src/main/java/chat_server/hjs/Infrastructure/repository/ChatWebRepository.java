@@ -1,8 +1,13 @@
 package chat_server.hjs.Infrastructure.repository;
 
 import chat_server.hjs.Infrastructure.dao.UserAccountDao;
+import chat_server.hjs.Infrastructure.po.UserAccount;
 import chat_server.hjs.domain.ChatWeb.model.enity.UserAccountQuotaEntity;
+import chat_server.hjs.domain.ChatWeb.model.valobj.UserAccountStatusVO;
 import chat_server.hjs.domain.ChatWeb.repository.IChatWebRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Objects;
 
 /**
  * @className: ChatWebRepository
@@ -11,6 +16,7 @@ import chat_server.hjs.domain.ChatWeb.repository.IChatWebRepository;
  * @Version: 1.0
  * @description:
  */
+@Repository
 public class ChatWebRepository implements IChatWebRepository {
 
     private UserAccountDao userAccountDao;
@@ -21,13 +27,21 @@ public class ChatWebRepository implements IChatWebRepository {
 
     @Override
     public int subAccountQuota(String openai) {
-
-
-        return 0;
+        return userAccountDao.subAccountQuota(openai);
     }
 
     @Override
     public UserAccountQuotaEntity queryUserAccount(String openid) {
-        return null;
+        UserAccount userAccount = userAccountDao.queryUserAccount(openid);
+        if (Objects.isNull(userAccount)) {
+            return null;
+        }
+        UserAccountQuotaEntity entity=new UserAccountQuotaEntity();
+        entity.setOpenid(userAccount.getOpenid());
+        entity.setSurplusQuota(userAccount.getSurplusQuota());
+        entity.setTotalQuota(userAccount.getTotalQuota());
+        entity.setAllowModelTypeList(userAccount.getModelTypes());
+        entity.setUserAccountStatusVO(UserAccountStatusVO.get(userAccount.getStatus()));
+        return entity;
     }
 }

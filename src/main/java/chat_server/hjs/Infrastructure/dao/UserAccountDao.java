@@ -1,7 +1,10 @@
 package chat_server.hjs.Infrastructure.dao;
 
 
+import chat_server.hjs.Infrastructure.po.UserAccount;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import retrofit2.http.PartMap;
 
 /**
  * (UserAccount)表数据库访问层
@@ -12,6 +15,11 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface UserAccountDao {
+
+    int subAccountQuota(@Param("openid") String openid);
+
+    UserAccount queryUserAccount(@Param("openid") String openid);
+
 
   
 

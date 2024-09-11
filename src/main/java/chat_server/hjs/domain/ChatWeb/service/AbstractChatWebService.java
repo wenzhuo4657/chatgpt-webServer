@@ -9,6 +9,7 @@ import chat_server.hjs.domain.ChatWeb.model.enity.RuleLogicEntity;
 import chat_server.hjs.Infrastructure.model.valobj.Constants;
 import chat_server.hjs.domain.ChatWeb.model.enity.UserAccountQuotaEntity;
 import chat_server.hjs.domain.ChatWeb.model.valobj.LogicCheckTypeVO;
+import chat_server.hjs.domain.ChatWeb.repository.IChatWebRepository;
 import chat_server.hjs.domain.ChatWeb.service.rule.factory.DefaultLogicFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
@@ -30,6 +31,13 @@ public abstract class AbstractChatWebService implements IChatWebService {
 
     private Logger log = LoggerFactory.getLogger(AbstractChatWebService.class);
 
+    private IChatWebRepository chatWebRepository;
+
+
+    public AbstractChatWebService(IChatWebRepository chatWebRepository) {
+        this.chatWebRepository = chatWebRepository;
+    }
+
     /**
      * des: 应答的模版方法
      */
@@ -44,8 +52,10 @@ public abstract class AbstractChatWebService implements IChatWebService {
                 log.info("应答出错，使用模型{}", chatProcess.getModel(), throwable);
             });
 
+            UserAccountQuotaEntity userAccountQuotaEntity = chatWebRepository.queryUserAccount(chatProcess.getOpenid());
 
             RuleLogicEntity<ChatProcessAggregate> entity = this.doCheckLogic(chatProcess,
+                    userAccountQuotaEntity,
                     DefaultLogicFactory.LogicModel.ACCESS_LIMIT.getCode(),
                     DefaultLogicFactory.LogicModel.SENSITIVE_WORD.getCode());
 

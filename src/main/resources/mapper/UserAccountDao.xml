@@ -12,8 +12,21 @@
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
+    <sql id="po">
+        openid, total_quota, surplus_quota, model_types, status
+    </sql>
+    <select id="subAccountQuota" resultType="java.lang.Integer">
+        update  user_account set surplus_quota=surplus_quota-1
+        where openid=#{openid} and status=0 and surplus_quota>0
+    </select>
+    <select id="queryUserAccount" resultType="chat_server.hjs.Infrastructure.po.UserAccount">
 
-   
+        select
+        <include refid="po"></include>
+        from user_account
+        where openid=#{openid}
+    </select>
+
 
 </mapper>
 

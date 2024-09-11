@@ -6,7 +6,9 @@ import chat_server.hjs.Infrastructure.Exception.ChatGPTException;
 import chat_server.hjs.domain.ChatWeb.model.enity.RuleLogicEntity;
 import chat_server.hjs.Infrastructure.model.valobj.Constants;
 import chat_server.hjs.domain.ChatWeb.model.dto.ChatProcessAggregate;
+import chat_server.hjs.domain.ChatWeb.model.enity.UserAccountQuotaEntity;
 import chat_server.hjs.domain.ChatWeb.model.valobj.LogicCheckTypeVO;
+import chat_server.hjs.domain.ChatWeb.repository.IChatWebRepository;
 import chat_server.hjs.domain.ChatWeb.service.rule.ILogicFilter;
 import chat_server.hjs.domain.ChatWeb.service.rule.factory.DefaultLogicFactory;
 import com.alibaba.fastjson.JSON;
@@ -18,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
@@ -39,26 +42,34 @@ import java.util.stream.Collectors;
 public class ChatWebService extends AbstractChatWebService {
     Logger log = LoggerFactory.getLogger(ChatWebService.class);
 
-
-    @Resource
-    private DefaultLogicFactory defaultLogicFactory;
+    @Autowired
+    public ChatWebService(IChatWebRepository chatWebRepository) {
+        super(chatWebRepository);
+    }
 
     @Override
-    protected RuleLogicEntity<ChatProcessAggregate> doCheckLogic(ChatProcessAggregate chatProcess, String... logics) throws Exception {
+    protected RuleLogicEntity<ChatProcessAggregate> doCheckLogic(ChatProcessAggregate chatProcess, UserAccountQuotaEntity userAccountQuotaEntity, String... logics) throws Exception {
         Map<String, ILogicFilter> logicFilterMap = defaultLogicFactory.getLogicFilterMap();
         RuleLogicEntity<ChatProcessAggregate> entity=null;
 
         for (String code :logics){
-             entity = logicFilterMap.get(code).filter(chatProcess);
-             if (!LogicCheckTypeVO.SUCCESS.getCode().equals(entity.getType())){
-                 return  entity;
-             }
+            if (DefaultLogicFactory.LogicModel.NULL.getCode().equals(code)) continue;
+            entity = logicFilterMap.get(code).filter(chatProcess,userAccountQuotaEntity);
+            if (!LogicCheckTypeVO.SUCCESS.getCode().equals(entity.getType())){
+                return  entity;
+            }
         }
 
 //        注意这个三元表达式，entity只会在没有对应过滤器是返回一个null,所以此处返回一个成功的校验。
         return entity!=null? entity:RuleLogicEntity.<ChatProcessAggregate>builder()
                 .type(LogicCheckTypeVO.SUCCESS).data(chatProcess).build();
     }
+
+    @Resource
+    private DefaultLogicFactory defaultLogicFactory;
+
+
+
 
     @Override
     protected void doMessageResponse(ChatProcessAggregate chatProcess, ResponseBodyEmitter responseBodyEmitter) throws JsonProcessingException {
